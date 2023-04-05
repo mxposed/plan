@@ -1,0 +1,14 @@
+{
+    "name": "plan",
+    "packageManager": "yarn@3.5.0",
+    "scripts": {
+        "start": "parcel index.html"
+    },
+    "devDependencies": {
+        "parcel": "^2.8.3"
+    },
+    "dependencies": {
+        "arquero": "^5.1.0",
+        "d3": "^7.8.4"
+    }
+}
