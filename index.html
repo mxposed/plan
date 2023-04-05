@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style type="text/css">
+body {
+    font-family: "PT Sans", Helvetica, Arial, sans-serif;
+    padding-bottom: 200px;
+}
+.hidden {
+    display: none;
+}
+.container {
+    display: flex;
+    margin: 50px;
+}
+.container div {
+    padding: 10px;
+    background: rgba(150, 150, 150, 0.1);
+    border-radius: 5px;
+    border: 1px solid #777;
+    margin-bottom: 5px;
+}
+.container > div {
+    padding: 0;
+    background: none;
+    border: none;
+}
+.container div span.deadline {
+    display: inline-block;
+    margin-left: 20px;
+}
+.container div i.add-item {
+    display: block;
+    text-align: right;
+    margin-bottom: -10px;
+}
+.container div i.add-item span {
+    cursor: pointer;
+}
+</style>
+<body>
+<script type="module" src="main.js"></script>
+</body>
