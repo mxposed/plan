@@ -54,9 +54,32 @@ export default class App {
         this.d = this.body.append("div")
             .classed("container", true);
 
-        const root = d3.stratify()
+        let root = d3.stratify()
             .parentId(i => i.parent)
             (this.data);
+        root.eachAfter(node => {
+            if (node.children === undefined) {
+                if (node.data.deadline) {
+                    node.deadline = d3.timeDay.count(App.today, node.data.deadline);
+                    node.sortDeadline = node.deadline;
+                    return;
+                }
+                node.sortDeadline = Infinity;
+                return;
+            }
+            const deadlines = [];
+            if (node.data.deadline) {
+                node.deadline = d3.timeDay.count(App.today, node.data.deadline);
+                deadlines.push(node.deadline);
+            }
+            for (let child of node.children) {
+                deadlines.push(child.sortDeadline);
+            }
+            deadlines.sort((a, b) => a - b);
+            node.sortDeadline = deadlines[0];
+        });
+        root = root.sort((a, b) => a.sortDeadline - b.sortDeadline);
+        console.log(root);
 
         const items = {};
         root.each(node => {
@@ -70,27 +93,32 @@ export default class App {
                 return;
             }
             if (node.data.link) {
-                i.append("a")
+                let name = i.append("a")
                     .attr("href", node.data.link)
                     .attr("target", "_blank")
                     .text(node.data.name);
             } else {
-                i.append("span")
-                    .text(node.data.name);
+                let name = i.append("span")
+                    .text(node.data.name)
+                    .attr("contentEditable", true)
+                    .attr("spellcheck", false)
+                    .on("blur", () => {
+                        node.data.name = name.text();
+                        this.data.save();
+                    });
             }
-            if (node.data.deadline) {
-                const deadline = d3.timeDay.count(App.today, node.data.deadline);
+            if (node.deadline) {
                 let deadlineStr;
-                if (deadline < -1) {
-                    deadlineStr = `due ${deadline} days ago`;
-                } else if (deadline == -1) {
+                if (node.deadline < -1) {
+                    deadlineStr = `due ${node.deadline} days ago`;
+                } else if (node.deadline == -1) {
                     deadlineStr = "due 1 day ago";
-                } else if (deadline === 0) {
+                } else if (node.deadline === 0) {
                     deadlineStr = "due today";
-                } else if (deadline == 1) {
+                } else if (node.deadline == 1) {
                     deadlineStr = "due tomorrow";
                 } else {
-                    deadlineStr = `due in ${deadline} days`;
+                    deadlineStr = `due in ${node.deadline} days`;
                 }
                 i.append("span")
                     .classed("deadline", true)
@@ -99,9 +127,6 @@ export default class App {
         });
         root.eachAfter(node => {
             const i = items[node.data.id];
-            if (!node.data.parent) {
-                return;
-            }
             i.append("i")
                 .classed("add-item", true)
                 .append("span")

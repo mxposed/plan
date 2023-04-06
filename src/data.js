@@ -1,4 +1,4 @@
-import { timeParse } from "d3";
+import { timeParse, timeFormat } from "d3";
 
 class Entry {
     id;
@@ -15,6 +15,7 @@ export default class Data {
     static DATA_KEY = '__plan';
     static ROOT_NODE_ID = '__root';
     static parseDate = timeParse("%Y-%m-%d");
+    static saveDate = timeFormat("%Y-%m-%d");
 
 
     static load() {
@@ -31,7 +32,7 @@ export default class Data {
         let rootAdded = false;
         let rootFound = false;
         for (let item of data) {
-            if (!item.parent) {
+            if (!item.parent && item.id !== Data.ROOT_NODE_ID) {
                 item.parent = Data.ROOT_NODE_ID;
                 rootAdded = true;
             }
@@ -52,7 +53,11 @@ export default class Data {
     }
 
     save() {
-        window.localStorage.removeItem(Data.DATA_KEY);
+        for (let item of this.data) {
+            if (item.deadline && item.deadline instanceof Date) {
+                item.deadline = Data.saveDate(item.deadline);
+            }
+        }
         window.localStorage.setItem(Data.DATA_KEY, JSON.stringify(this.data));
     }
 
