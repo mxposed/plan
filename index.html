@@ -6,6 +6,20 @@ body {
     font-family: "PT Sans", Helvetica, Arial, sans-serif;
     padding-bottom: 200px;
 }
+a {
+    color: #1385cb;
+}
+a:visited {
+    color: #0e74bc;
+}
+a:after {
+    display: inline-block;
+    content: "⎋";
+    transform: scaleX(-1);
+    font-style: normal;
+    font-size: 90%;
+    margin-left: 4px;
+}
 .hidden {
     display: none;
 }
@@ -18,15 +32,23 @@ body {
     background: rgba(150, 150, 150, 0.1);
     border-radius: 5px;
     border: 1px solid #777;
-    margin: 4px 0;
+    margin: 4px 0 4px 20px;
 }
 .container > div {
     background: none;
 }
-.container div span.deadline {
+.container div b.header {
+    display: flex;
+    font-weight: normal;
+    align-items: baseline;
+}
+.container div b.header u {
+    min-width: 20px;
+    flex-grow: 1;
+}
+.container div b.header span.deadline {
     font-size: 90%;
-    display: inline-block;
-    margin-left: 20px;
+    margin-left: 5px;
 }
 .container div i.add-item {
     display: block;
@@ -38,7 +60,7 @@ body {
     cursor: pointer;
 }
 .container div i.add-item:hover {
-    background: #777;
+    background: #aaa;
     color: white;
 }
 .container div i.add-item span {

@@ -87,26 +87,27 @@ export default class App {
             if (node.data.parent) {
                 parent = items[node.data.parent];
             }
-            const i = items[node.data.id] = parent.append("div")
-                .style("margin-left", "20px");
+            const i = items[node.data.id] = parent.append("div");
             if (!node.data.parent) {
                 return;
             }
+            const n = i.append("b")
+                .classed("header", true);
+            let name = n.append("span")
+                .classed("title", true)
+                .text(node.data.name)
+                .attr("contentEditable", true)
+                .attr("spellcheck", false)
+                .on("blur", () => {
+                    node.data.name = name.text();
+                    this.data.save();
+                });
             if (node.data.link) {
-                let name = i.append("a")
+                n.append("a")
                     .attr("href", node.data.link)
-                    .attr("target", "_blank")
-                    .text(node.data.name);
-            } else {
-                let name = i.append("span")
-                    .text(node.data.name)
-                    .attr("contentEditable", true)
-                    .attr("spellcheck", false)
-                    .on("blur", () => {
-                        node.data.name = name.text();
-                        this.data.save();
-                    });
+                    .attr("target", "_blank");
             }
+            n.append("u");
             if (node.deadline) {
                 let deadlineStr;
                 if (node.deadline < -1) {
@@ -120,7 +121,7 @@ export default class App {
                 } else {
                     deadlineStr = `due in ${node.deadline} days`;
                 }
-                i.append("span")
+                n.append("span")
                     .classed("deadline", true)
                     .text(deadlineStr);
             }
